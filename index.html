@@ -727,20 +727,33 @@
         let records = [];
         let selectedMoods = new Set();
         let selectedSymptoms = new Set();
-        
-        // メモリベースのデータストレージ（ローカルストレージの代替）
-        const dataStorage = {
-            data: [],
-            save: function(records) {
-                this.data = [...records];
-            },
-            load: function() {
-                return [...this.data];
-            },
-            clear: function() {
-                this.data = [];
-            }
-        };
+
+// データストレージ（localStorage使用）
+const dataStorage = {
+    save: function(records) {
+        try {
+            localStorage.setItem('mentalHealthRecords', JSON.stringify(records));
+        } catch (error) {
+            console.error('データの保存に失敗しました:', error);
+        }
+    },
+    load: function() {
+        try {
+            const data = localStorage.getItem('mentalHealthRecords');
+            return data ? JSON.parse(data) : [];
+        } catch (error) {
+            console.error('データの読み込みに失敗しました:', error);
+            return [];
+        }
+    },
+    clear: function() {
+        try {
+            localStorage.removeItem('mentalHealthRecords');
+        } catch (error) {
+            console.error('データの削除に失敗しました:', error);
+        }
+    }
+};
 
         // 気分と症状のラベル辞書
         const moodLabels = {
